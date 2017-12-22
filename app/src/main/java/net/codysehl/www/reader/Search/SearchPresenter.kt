@@ -1,36 +1,58 @@
 package net.codysehl.www.reader.Search
 
 import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.conf.ConfigurableKodein
-import com.github.salomonbrys.kodein.conf.global
+import com.github.salomonbrys.kodein.KodeinAware
 import com.github.salomonbrys.kodein.instance
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import net.codysehl.www.reader.ReduxLike.ApplicationState
 import net.codysehl.www.reader.ReduxLike.Action
 import net.codysehl.www.reader.ReduxLike.Store
 
-class SearchPresenter {
+class SearchPresenter(override val kodein: Kodein) : KodeinAware {
 
-    val store: Store<ApplicationState> = Kodein.global.instance()
+    private val store: Store<ApplicationState> = instance()
+    private var disposables: List<Disposable> = listOf()
 
-    // Render when given props
-    fun render(props: ApplicationState) {
+    fun onViewReady(view: View) {
+        disposables = listOf(
+                store.observable
+                        .map { Props.fromState(it) }
+                        .doOnNext { view.render(it) }
+                        .subscribe(),
 
+                view.searchTermChanged
+                        .doOnNext {
+                            store.dispatch(Action.SearchTermChanged(it))
+                        }
+                        .subscribe(),
+
+                view.searchTermSubmitted
+                        .doOnNext {
+                            store.dispatch(Action.SearchSubmitted())
+                        }
+                        .subscribe()
+        )
     }
 
-    // User actions
-
-    fun textEntered(text: String) {
-        store.dispatch(Action.SearchTextEntered(text))
-    }
-
-    fun enterPressed() {
-
+    fun onDestroy() {
+        disposables.forEach(Disposable::dispose)
     }
 
     // Interface
 
     interface View {
-        fun setSearchBarText(text: String)
-        fun setSearchResults(searchResults: List<String>)
+        val searchTermChanged: Observable<String>
+        val searchTermSubmitted: Observable<Any>
+
+        fun render(props: Props)
+    }
+
+    data class Props(val searchText: String) {
+        companion object {
+            fun fromState(state: ApplicationState): Props {
+                return Props(searchText = state.searchText)
+            }
+        }
     }
 }

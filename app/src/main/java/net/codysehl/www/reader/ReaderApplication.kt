@@ -8,7 +8,8 @@ import net.codysehl.www.reader.ReduxLike.Reducer
 import net.codysehl.www.reader.ReduxLike.Store
 
 class ReaderApplication: Application() {
-    init {
-        Kodein.global.addConfig { KodeinModule.module }
+    override fun onCreate() {
+        super.onCreate()
+        Kodein.global.addImport(KodeinModule())
     }
 }

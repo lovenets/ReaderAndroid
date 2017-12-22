@@ -2,7 +2,6 @@ package net.codysehl.www.reader.Search
 
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.conf.global
 import com.github.salomonbrys.kodein.singleton
 import io.mockk.every
 import io.mockk.mockk
@@ -18,31 +17,60 @@ import org.junit.Before
 class SearchPresenterTest {
     lateinit var subject: SearchPresenter
     lateinit var store: Store<ApplicationState>
+    lateinit var view: SearchPresenter.View
+
     lateinit var stateObservable: PublishSubject<ApplicationState>
+    lateinit var searchTermChangedObservable: PublishSubject<String>
+    lateinit var searchTermSubmittedObservable: PublishSubject<Any>
+
 
     @Before
     fun setUp() {
         stateObservable = PublishSubject.create<ApplicationState>()
+        searchTermChangedObservable = PublishSubject.create<String>()
+        searchTermSubmittedObservable = PublishSubject.create<Any>()
+
         store = mockk()
         every { store.observable } returns stateObservable
         every { store.dispatch(any()) } returns Unit
 
-        Kodein.global.addConfig {
+        view = mockk()
+        every { view.searchTermChanged } returns searchTermChangedObservable
+        every { view.searchTermSubmitted } returns searchTermSubmittedObservable
+
+        val kodein = Kodein {
             bind<Store<ApplicationState>>() with singleton { store }
         }
 
-        subject = SearchPresenter()
+        subject = SearchPresenter(kodein)
+        subject.onViewReady(view)
     }
 
     @Test
-    fun textEntered_dispatchesATextEnteredAction() {
-        val textToEnter = "search term"
+    fun viewReady_setsUpRendering() {
+        val textEntered = "some new text"
+        stateObservable.onNext(ApplicationState(textEntered))
 
-        subject.textEntered(textToEnter)
+        verify { view.render(eq(SearchPresenter.Props(textEntered))) }
+    }
 
-        verify { store.dispatch(ofType(Action.SearchTextEntered::class)) }
-        verify { store.dispatch(match<Action.SearchTextEntered> { it.text == textToEnter }) }
+    @Test
+    fun searchTermChanged_dispatchesAnAction() {
+        val newSearchTerm = "search term"
+        val expectedAction = Action.SearchTermChanged(newSearchTerm)
 
+        searchTermChangedObservable.onNext(newSearchTerm)
+
+        verify { store.dispatch(eq(expectedAction)) }
+    }
+
+    @Test
+    fun enterPressed_dispatchesAnAction() {
+        val expectedAction = Action.SearchSubmitted()
+
+        searchTermSubmittedObservable.onNext(Unit)
+
+        verify { store.dispatch(eq(expectedAction)) }
     }
 
 }
