@@ -6,23 +6,22 @@ import com.github.salomonbrys.kodein.singleton
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import net.codysehl.www.reader.ReduxLike.Action
+import net.codysehl.www.reader.ReduxLike.ActionCreator
 import net.codysehl.www.reader.ReduxLike.ApplicationState
-import net.codysehl.www.reader.ReduxLike.Store
 import org.junit.Test
 
 import org.junit.Before
 
 class SearchPresenterTest {
     lateinit var subject: SearchPresenter
-    lateinit var store: Store<ApplicationState>
     lateinit var view: SearchPresenter.View
+    lateinit var actionCreator: ActionCreator
 
     lateinit var stateObservable: PublishSubject<ApplicationState>
     lateinit var searchTermChangedObservable: PublishSubject<String>
     lateinit var searchTermSubmittedObservable: PublishSubject<Any>
-
 
     @Before
     fun setUp() {
@@ -30,16 +29,15 @@ class SearchPresenterTest {
         searchTermChangedObservable = PublishSubject.create<String>()
         searchTermSubmittedObservable = PublishSubject.create<Any>()
 
-        store = mockk()
-        every { store.observable } returns stateObservable
-        every { store.dispatch(any()) } returns Unit
-
         view = mockk()
         every { view.searchTermChanged } returns searchTermChangedObservable
         every { view.searchTermSubmitted } returns searchTermSubmittedObservable
 
+        actionCreator = mockk()
+
         val kodein = Kodein {
-            bind<Store<ApplicationState>>() with singleton { store }
+            bind<Observable<ApplicationState>>() with singleton { stateObservable }
+            bind<ActionCreator>() with singleton { actionCreator }
         }
 
         subject = SearchPresenter(kodein)
@@ -57,20 +55,17 @@ class SearchPresenterTest {
     @Test
     fun searchTermChanged_dispatchesAnAction() {
         val newSearchTerm = "search term"
-        val expectedAction = Action.SearchTermChanged(newSearchTerm)
 
         searchTermChangedObservable.onNext(newSearchTerm)
 
-        verify { store.dispatch(eq(expectedAction)) }
+        verify { actionCreator.searchTermChanged(newSearchTerm) }
     }
 
     @Test
     fun enterPressed_dispatchesAnAction() {
-        val expectedAction = Action.SearchSubmitted()
-
         searchTermSubmittedObservable.onNext(Unit)
 
-        verify { store.dispatch(eq(expectedAction)) }
+        verify { actionCreator.searchSubmitted() }
     }
 
 }

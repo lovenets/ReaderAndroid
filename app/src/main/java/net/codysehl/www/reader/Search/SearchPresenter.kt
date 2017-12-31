@@ -6,30 +6,30 @@ import com.github.salomonbrys.kodein.instance
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import net.codysehl.www.reader.ReduxLike.ApplicationState
-import net.codysehl.www.reader.ReduxLike.Action
-import net.codysehl.www.reader.ReduxLike.Store
+import net.codysehl.www.reader.ReduxLike.ActionCreator
 
 class SearchPresenter(override val kodein: Kodein) : KodeinAware {
 
-    private val store: Store<ApplicationState> = instance()
+    private val applicationState: Observable<ApplicationState> = instance()
+    private val actionCreator: ActionCreator = instance()
     private var disposables: List<Disposable> = listOf()
 
     fun onViewReady(view: View) {
         disposables = listOf(
-                store.observable
+                applicationState
                         .map { Props.fromState(it) }
                         .doOnNext { view.render(it) }
                         .subscribe(),
 
                 view.searchTermChanged
                         .doOnNext {
-                            store.dispatch(Action.SearchTermChanged(it))
+                            actionCreator.searchTermChanged(it)
                         }
                         .subscribe(),
 
                 view.searchTermSubmitted
                         .doOnNext {
-                            store.dispatch(Action.SearchSubmitted())
+                            actionCreator.searchSubmitted()
                         }
                         .subscribe()
         )

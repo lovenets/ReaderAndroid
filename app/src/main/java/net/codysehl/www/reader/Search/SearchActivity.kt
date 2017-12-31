@@ -16,7 +16,7 @@ class SearchActivity: Activity(), SearchPresenter.View {
     override lateinit var searchTermSubmitted: Observable<Any>
     private val injector = KodeinInjector()
 
-    val presenter: SearchPresenter by injector.with(Kodein.global).instance()
+    private val presenter: SearchPresenter by injector.with(Kodein.global).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
