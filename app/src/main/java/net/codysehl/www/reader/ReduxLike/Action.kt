@@ -1,16 +1,11 @@
 package net.codysehl.www.reader.ReduxLike
 
-import com.github.salomonbrys.kodein.*
-import com.github.salomonbrys.kodein.conf.global
+import net.codysehl.www.reader.Model.Book
 
 sealed class Action {
     data class SearchTermChanged(val text: String): Action()
+
     data class SearchSubmitted(val unit: Unit = Unit): Action()
-}
-
-class ActionCreator {
-    private val store: Store<ApplicationState> = Kodein.global.instance()
-
-    fun searchTermChanged(text: String) = store.dispatch(Action.SearchTermChanged(text))
-    fun searchSubmitted() = store.dispatch(Action.SearchSubmitted())
+    data class SearchCompletedWithSuccess(val books: List<Book>): Action()
+    data class SearchCompletedWithFailure(val unit: Unit = Unit): Action()
 }

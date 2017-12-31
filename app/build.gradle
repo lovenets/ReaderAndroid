@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "net.codysehl.www.reader"
         minSdkVersion 23
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -25,7 +25,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:27.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
@@ -36,7 +36,9 @@ dependencies {
 
     compile 'io.reactivex.rxjava2:rxkotlin:2.2.0' // Rx for kotlin
 
-    testCompile "io.mockk:mockk:1.6" // mocking library
+    testCompile "com.nhaarman:mockito-kotlin:1.5.0" // mocking library
 
     compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0' // Rx extensions for android view components
+
+    compile 'nl.komponents.kovenant:kovenant:3.3.0' // Promises
 }

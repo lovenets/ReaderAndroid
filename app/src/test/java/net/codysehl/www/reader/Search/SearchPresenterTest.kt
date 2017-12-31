@@ -2,12 +2,16 @@ package net.codysehl.www.reader.Search
 
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
+import com.github.salomonbrys.kodein.conf.ConfigurableKodein
+import com.github.salomonbrys.kodein.conf.global
+import com.github.salomonbrys.kodein.factory
 import com.github.salomonbrys.kodein.singleton
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
+import net.codysehl.www.reader.KodeinModule
 import net.codysehl.www.reader.ReduxLike.ActionCreator
 import net.codysehl.www.reader.ReduxLike.ApplicationState
 import org.junit.Test
@@ -29,15 +33,17 @@ class SearchPresenterTest {
         searchTermChangedObservable = PublishSubject.create<String>()
         searchTermSubmittedObservable = PublishSubject.create<Any>()
 
-        view = mockk()
-        every { view.searchTermChanged } returns searchTermChangedObservable
-        every { view.searchTermSubmitted } returns searchTermSubmittedObservable
+        view = mock {
+            on { searchTermChanged } doReturn searchTermChangedObservable
+            on { searchTermSubmitted } doReturn searchTermSubmittedObservable
+        }
 
-        actionCreator = mockk()
+        actionCreator = mock()
 
-        val kodein = Kodein {
+        val kodein = ConfigurableKodein()
+        kodein.addConfig {
             bind<Observable<ApplicationState>>() with singleton { stateObservable }
-            bind<ActionCreator>() with singleton { actionCreator }
+            bind<ActionCreator>() with factory<ConfigurableKodein, ActionCreator> { actionCreator }
         }
 
         subject = SearchPresenter(kodein)
@@ -49,7 +55,7 @@ class SearchPresenterTest {
         val textEntered = "some new text"
         stateObservable.onNext(ApplicationState(textEntered))
 
-        verify { view.render(eq(SearchPresenter.Props(textEntered))) }
+        verify(view).render(SearchPresenter.Props(textEntered))
     }
 
     @Test
@@ -58,14 +64,14 @@ class SearchPresenterTest {
 
         searchTermChangedObservable.onNext(newSearchTerm)
 
-        verify { actionCreator.searchTermChanged(newSearchTerm) }
+        verify(actionCreator).searchTermChanged(newSearchTerm)
     }
 
     @Test
     fun enterPressed_dispatchesAnAction() {
         searchTermSubmittedObservable.onNext(Unit)
 
-        verify { actionCreator.searchSubmitted() }
+        verify(actionCreator).searchSubmitted()
     }
 
 }

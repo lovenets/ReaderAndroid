@@ -7,6 +7,8 @@ import net.codysehl.www.reader.ReduxLike.ActionCreator
 import net.codysehl.www.reader.ReduxLike.ApplicationState
 import net.codysehl.www.reader.ReduxLike.Reducer
 import net.codysehl.www.reader.ReduxLike.Store
+import net.codysehl.www.reader.Repository.BookSearchRepository
+import net.codysehl.www.reader.Repository.SomeKindOfBookSearchRepository
 import net.codysehl.www.reader.Search.SearchPresenter
 
 fun KodeinModule(): Kodein.Module {
@@ -15,7 +17,7 @@ fun KodeinModule(): Kodein.Module {
         bind<Store<ApplicationState>>() with singleton { store }
         bind<Observable<ApplicationState>>() with singleton { store.observable }
 
-        bind<ActionCreator>() with singleton { ActionCreator() }
+        bind<ActionCreator>() with factory { kodein: ConfigurableKodein -> ActionCreator(kodein) }
 
         bind<SearchPresenter>() with factory { kodein: ConfigurableKodein -> SearchPresenter(kodein) }
     }

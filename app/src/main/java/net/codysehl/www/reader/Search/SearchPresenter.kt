@@ -2,16 +2,18 @@ package net.codysehl.www.reader.Search
 
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinAware
+import com.github.salomonbrys.kodein.conf.ConfigurableKodein
 import com.github.salomonbrys.kodein.instance
+import com.github.salomonbrys.kodein.with
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import net.codysehl.www.reader.ReduxLike.ApplicationState
 import net.codysehl.www.reader.ReduxLike.ActionCreator
 
-class SearchPresenter(override val kodein: Kodein) : KodeinAware {
+class SearchPresenter(override val kodein: ConfigurableKodein) : KodeinAware {
 
     private val applicationState: Observable<ApplicationState> = instance()
-    private val actionCreator: ActionCreator = instance()
+    private val actionCreator: ActionCreator = with(kodein).instance()
     private var disposables: List<Disposable> = listOf()
 
     fun onViewReady(view: View) {
