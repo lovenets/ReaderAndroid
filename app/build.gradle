@@ -35,6 +35,7 @@ dependencies {
     compile 'com.github.salomonbrys.kodein:kodein-conf:4.1.0'
 
     compile 'io.reactivex.rxjava2:rxkotlin:2.2.0' // Rx for kotlin
+    compile 'io.reactivex:rxandroid:0.23.0' // Rx for Android
 
     testCompile "com.nhaarman:mockito-kotlin:1.5.0" // mocking library
 

@@ -6,8 +6,8 @@ object Reducer {
         return when (action) {
             is Action.SearchTermChanged -> reduceSearchTermChangedAction(state, action)
             is Action.SearchSubmitted -> reduceSearchSubmittedAction(state, action)
-            is Action.SearchCompletedWithSuccess -> reduceSearchCompletedWithSuccess(state, action)
-            is Action.SearchCompletedWithFailure -> reduceSearchCompletedWithFailure(state, action)
+            is Action.SearchCompletedWithSuccess -> reduceSearchCompletedWithSuccessAction(state, action)
+            is Action.SearchCompletedWithFailure -> reduceSearchCompletedWithFailureAction(state, action)
         }
     }
 
@@ -16,14 +16,14 @@ object Reducer {
     }
 
     private fun reduceSearchSubmittedAction(state: ApplicationState, action: Action.SearchSubmitted): ApplicationState {
-        return state
+        return state.copy(searchPending = true)
     }
 
-    private fun reduceSearchCompletedWithFailure(state: ApplicationState, action: Action.SearchCompletedWithFailure): ApplicationState {
-        return state
+    private fun reduceSearchCompletedWithSuccessAction(state: ApplicationState, action: Action.SearchCompletedWithSuccess): ApplicationState {
+        return state.copy(searchPending = false)
     }
 
-    private fun reduceSearchCompletedWithSuccess(state: ApplicationState, action: Action.SearchCompletedWithSuccess): ApplicationState {
-        return state
+    private fun reduceSearchCompletedWithFailureAction(state: ApplicationState, action: Action.SearchCompletedWithFailure): ApplicationState {
+        return state.copy(searchPending = false)
     }
 }
