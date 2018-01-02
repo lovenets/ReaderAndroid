@@ -41,5 +41,6 @@ dependencies {
 
     compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0' // Rx extensions for android view components
 
-    compile 'nl.komponents.kovenant:kovenant:3.3.0' // Promises
+    compile 'de.codecrafters.apaarb:apaarb:0.9.1' // Amazon Product Search URL Builder
+    compile 'org.simpleframework:simple-xml:2.7.1' // XML Serialization
 }
