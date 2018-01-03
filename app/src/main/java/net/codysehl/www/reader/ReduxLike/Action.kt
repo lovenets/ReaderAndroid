@@ -7,5 +7,5 @@ sealed class Action {
 
     data class SearchSubmitted(val unit: Unit = Unit): Action()
     data class SearchCompletedWithSuccess(val books: List<Book>): Action()
-    data class SearchCompletedWithFailure(val unit: Unit = Unit): Action()
+    data class SearchCompletedWithFailure(val error: String): Action()
 }

@@ -1,8 +1,10 @@
 package net.codysehl.www.reader.ReduxLike
 
+import android.util.Log
+
 object Reducer {
     fun reduce(state: ApplicationState, action: Action): ApplicationState {
-        println("Reducing: $action")
+        Log.d("#Lifecycle#", "Reducing: $action")
         return when (action) {
             is Action.SearchTermChanged -> reduceSearchTermChangedAction(state, action)
             is Action.SearchSubmitted -> reduceSearchSubmittedAction(state, action)

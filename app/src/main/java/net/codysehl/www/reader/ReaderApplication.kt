@@ -10,6 +10,6 @@ import net.codysehl.www.reader.ReduxLike.Store
 class ReaderApplication: Application() {
     override fun onCreate() {
         super.onCreate()
-        Kodein.global.addImport(KodeinModule())
+        Kodein.global.addImport(KodeinModule(this))
     }
 }

@@ -1,20 +1,26 @@
 package net.codysehl.www.reader
 
+import android.content.Context
+import android.content.res.Resources
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
 
-object SecretsService {
+class SecretsService(val context: Context?) {
     fun get(key: String): String {
-        val properties = Properties()
-        properties.load(FileInputStream(File("secrets.properties")))
+        if(context == null) {
+            throw Throwable("No context given to SecretsService, so service can't locate secrets.properties")
+        } else {
+            val properties = Properties()
+            properties.load(context.resources.openRawResource(R.raw.secrets))
 
-        val secret = properties[key]
+            val secret = properties[key]
 
-        when (secret) {
-            null -> throw Exception("ERROR: Tried to access secret $key from secrets.properties but it wasn't found.")
-            !is String -> throw Exception("ERROR: Tried to access secret $key from secrets.properties but it was not a String")
-            else -> return properties[key] as String
+            when (secret) {
+                null -> throw Exception("ERROR: Tried to access secret $key from secrets.properties but it wasn't found.")
+                !is String -> throw Exception("ERROR: Tried to access secret $key from secrets.properties but it was not a String")
+                else -> return properties[key] as String
+            }
         }
     }
 }

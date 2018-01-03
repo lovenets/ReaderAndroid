@@ -28,7 +28,8 @@ class ReducerTest {
     fun reduce_SearchCompletedWithSuccess() {
         assertEquals(
                 ApplicationState(searchPending = false),
-                Reducer.reduce(ApplicationState(searchPending = true), Action.SearchCompletedWithSuccess(listOf(Book(""))))
+                Reducer.reduce(ApplicationState(searchPending = true), Action.SearchCompletedWithSuccess(listOf(Book("", ""))))
+
         )
     }
 
@@ -36,7 +37,7 @@ class ReducerTest {
     fun reduce_SearchSubmittedWithFailure() {
         assertEquals(
                 ApplicationState(searchPending = false),
-                Reducer.reduce(ApplicationState(searchPending = true), Action.SearchCompletedWithFailure())
+                Reducer.reduce(ApplicationState(searchPending = true), Action.SearchCompletedWithFailure(""))
         )
     }
 

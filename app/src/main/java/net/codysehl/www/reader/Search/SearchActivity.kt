@@ -2,6 +2,7 @@ package net.codysehl.www.reader.Search
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.github.salomonbrys.kodein.*
@@ -42,6 +43,10 @@ class SearchActivity : Activity(), SearchPresenter.View {
 
         setContentView(linearLayout)
 
+
+        Log.e("Lifecycle", filesDir.listFiles().map {it.toString()}.joinToString())
+
+
         searchTermChanged = RxTextView.textChanges(searchBar).map { it.toString() }
         searchTermSubmitted = RxView.clicks(searchSubmitButton)
         presenter.onViewReady(this)
@@ -62,6 +67,6 @@ class SearchActivity : Activity(), SearchPresenter.View {
         searchBar.isEnabled = !props.disableSearchBar
         searchSubmitButton.isEnabled = !props.disableSearchSubmitButton
 
-        println("rendering $props")
+        Log.d("Lifcycle", "Rendering $props")
     }
 }

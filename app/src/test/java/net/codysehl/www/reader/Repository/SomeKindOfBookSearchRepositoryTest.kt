@@ -23,7 +23,5 @@ class SomeKindOfBookSearchRepositoryTest {
 
     @Test
     fun test() {
-//        val service = AmazonBookSearchService()
-//        println(service.search("David Foster Wallace"))
     }
 }
