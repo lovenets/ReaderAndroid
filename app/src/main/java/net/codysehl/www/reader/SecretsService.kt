@@ -1,9 +1,6 @@
 package net.codysehl.www.reader
 
 import android.content.Context
-import android.content.res.Resources
-import java.io.File
-import java.io.FileInputStream
 import java.util.*
 
 class SecretsService(val context: Context?) {

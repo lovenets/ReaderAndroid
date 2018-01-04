@@ -26,9 +26,10 @@ class ReducerTest {
 
     @Test
     fun reduce_SearchCompletedWithSuccess() {
+        val expectedBooks = listOf(Book("David Foster Wallace", "Ticket to the Fair"))
         assertEquals(
-                ApplicationState(searchPending = false),
-                Reducer.reduce(ApplicationState(searchPending = true), Action.SearchCompletedWithSuccess(listOf(Book("", ""))))
+                ApplicationState(searchPending = false, books = expectedBooks ),
+                Reducer.reduce(ApplicationState(searchPending = true), Action.SearchCompletedWithSuccess(expectedBooks))
 
         )
     }

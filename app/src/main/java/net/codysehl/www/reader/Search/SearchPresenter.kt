@@ -10,6 +10,8 @@ import io.reactivex.disposables.Disposable
 import net.codysehl.www.reader.ReduxLike.ApplicationState
 import net.codysehl.www.reader.ReduxLike.ActionCreator
 import net.codysehl.www.reader.KodeinTag
+import net.codysehl.www.reader.Model.Book
+import net.codysehl.www.reader.Search.SearchPresenter.Props.Book.Companion.fromModel
 
 class SearchPresenter(override val kodein: ConfigurableKodein) : KodeinAware {
 
@@ -57,15 +59,25 @@ class SearchPresenter(override val kodein: ConfigurableKodein) : KodeinAware {
             val searchText: String,
             val showLoadingSpinner: Boolean,
             val disableSearchBar: Boolean,
-            val disableSearchSubmitButton: Boolean
+            val disableSearchSubmitButton: Boolean,
+            val books: List<Book>
     ) {
+        data class Book(val title: String, val author: String) {
+            companion object {
+                fun fromModel(book: net.codysehl.www.reader.Model.Book): Book {
+                    return Book(book.title, book.author)
+                }
+            }
+        }
+
         companion object {
             fun fromState(state: ApplicationState): Props {
                 return Props(
                         searchText = state.searchText,
                         showLoadingSpinner = state.searchPending,
                         disableSearchBar = state.searchPending,
-                        disableSearchSubmitButton = state.searchPending
+                        disableSearchSubmitButton = state.searchPending,
+                        books = state.books.map { Book.fromModel(it) }
                 )
             }
         }

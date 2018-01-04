@@ -2,8 +2,12 @@ package net.codysehl.www.reader.Search
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.*
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.conf.*
@@ -21,6 +25,7 @@ class SearchActivity : Activity(), SearchPresenter.View {
     private lateinit var searchBar: EditText
     private lateinit var searchSubmitButton: Button
     private lateinit var progressIndicator: ProgressBar
+    private lateinit var bookListAdapter: BookListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +46,13 @@ class SearchActivity : Activity(), SearchPresenter.View {
         progressIndicator.visibility = View.GONE
         linearLayout.addView(progressIndicator)
 
+        bookListAdapter = BookListAdapter(listOf())
+        val recyclerView = RecyclerView(this)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = bookListAdapter
+        linearLayout.addView(recyclerView)
+
         setContentView(linearLayout)
-
-
-        Log.e("Lifecycle", filesDir.listFiles().map {it.toString()}.joinToString())
-
 
         searchTermChanged = RxTextView.textChanges(searchBar).map { it.toString() }
         searchTermSubmitted = RxView.clicks(searchSubmitButton)
@@ -66,6 +73,9 @@ class SearchActivity : Activity(), SearchPresenter.View {
 
         searchBar.isEnabled = !props.disableSearchBar
         searchSubmitButton.isEnabled = !props.disableSearchSubmitButton
+
+        bookListAdapter.books = props.books
+        bookListAdapter.notifyDataSetChanged()
 
         Log.d("Lifcycle", "Rendering $props")
     }

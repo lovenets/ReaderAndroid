@@ -9,7 +9,8 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import io.reactivex.subjects.PublishSubject
 import net.codysehl.www.reader.KodeinModule
-import net.codysehl.www.reader.Repository.AmazonBookSearchService
+import net.codysehl.www.reader.Repository.GoogleBooksResponse
+import net.codysehl.www.reader.Repository.GoogleBooksService
 import net.codysehl.www.reader.SchedulerModule
 import org.junit.Before
 import org.junit.Test
@@ -20,20 +21,20 @@ class SearchIntegrationTest {
     lateinit var view: SearchPresenter.View
     lateinit var searchTermChangedObservable: PublishSubject<String>
     lateinit var searchTermSubmittedObservable: PublishSubject<Any>
-    lateinit var amazonSearchResultObservable: PublishSubject<AmazonBookSearchService.AmazonItemSearchResponse>
+    lateinit var amazonSearchResultObservable: PublishSubject<GoogleBooksResponse>
 
     @Before
     fun setUp() {
         searchTermChangedObservable = PublishSubject.create<String>()
         searchTermSubmittedObservable = PublishSubject.create<Any>()
-        amazonSearchResultObservable = PublishSubject.create<AmazonBookSearchService.AmazonItemSearchResponse>()
+        amazonSearchResultObservable = PublishSubject.create<GoogleBooksResponse>()
 
         view = mock {
             on { searchTermChanged } doReturn searchTermChangedObservable
             on { searchTermSubmitted } doReturn searchTermSubmittedObservable
         }
 
-        val bookSearchService: AmazonBookSearchService = mock {
+        val bookSearchService: GoogleBooksService = mock {
             on { search(any()) } doReturn amazonSearchResultObservable
         }
 
@@ -41,7 +42,7 @@ class SearchIntegrationTest {
         kodein.addImport(KodeinModule(null), allowOverride = true)
         kodein.addImport(SchedulerModule(overrides = true), allowOverride = true)
         kodein.addConfig {
-            bind<AmazonBookSearchService>() with singleton { bookSearchService }
+            bind<GoogleBooksService>(overrides = true) with singleton { bookSearchService }
         }
         searchPresenter = SearchPresenter(kodein)
     }
@@ -49,12 +50,13 @@ class SearchIntegrationTest {
     @Test
     fun searchTermChanged() {
         val searchTerm = "David Foster Wallace"
-        val searchResults = AmazonBookSearchService.AmazonItemSearchResponse()
+        val searchResults = GoogleBooksResponse(listOf())
         val expectedRenderedProps = SearchPresenter.Props(
                 searchText = searchTerm,
                 showLoadingSpinner = false,
                 disableSearchBar = false,
-                disableSearchSubmitButton = false
+                disableSearchSubmitButton = false,
+                books = listOf()
             )
         searchPresenter.onViewReady(view)
 

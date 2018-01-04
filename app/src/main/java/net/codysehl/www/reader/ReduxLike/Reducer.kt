@@ -22,7 +22,7 @@ object Reducer {
     }
 
     private fun reduceSearchCompletedWithSuccessAction(state: ApplicationState, action: Action.SearchCompletedWithSuccess): ApplicationState {
-        return state.copy(searchPending = false)
+        return state.copy(searchPending = false, books = action.books)
     }
 
     private fun reduceSearchCompletedWithFailureAction(state: ApplicationState, action: Action.SearchCompletedWithFailure): ApplicationState {

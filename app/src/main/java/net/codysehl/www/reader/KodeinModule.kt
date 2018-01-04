@@ -11,10 +11,13 @@ import net.codysehl.www.reader.ReduxLike.ActionCreator
 import net.codysehl.www.reader.ReduxLike.ApplicationState
 import net.codysehl.www.reader.ReduxLike.Reducer
 import net.codysehl.www.reader.ReduxLike.Store
-import net.codysehl.www.reader.Repository.AmazonBookSearchService
 import net.codysehl.www.reader.Repository.BookSearchRepository
+import net.codysehl.www.reader.Repository.GoogleBooksService
 import net.codysehl.www.reader.Repository.SomeKindOfBookSearchRepository
 import net.codysehl.www.reader.Search.SearchPresenter
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
 fun KodeinModule(context: Context?): Kodein.Module {
     return Kodein.Module {
@@ -30,8 +33,6 @@ fun KodeinModule(context: Context?): Kodein.Module {
 
         bind<BookSearchRepository>() with factory { kodein: ConfigurableKodein -> SomeKindOfBookSearchRepository(kodein) }
 
-        bind<AmazonBookSearchService>() with factory { kodein: ConfigurableKodein -> AmazonBookSearchService(kodein) }
-
         if(context != null) {
             bind<SecretsService>() with singleton { SecretsService(context) }
         } else {
@@ -40,6 +41,13 @@ fun KodeinModule(context: Context?): Kodein.Module {
         }
 
         bind<Logger>() with singleton { Logger() }
+
+        val retrofit: Retrofit = Retrofit.Builder()
+                .baseUrl("https://www.googleapis.com/books/v1/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        bind<GoogleBooksService>() with singleton { retrofit.create(GoogleBooksService::class.java) }
 
     }
 }
