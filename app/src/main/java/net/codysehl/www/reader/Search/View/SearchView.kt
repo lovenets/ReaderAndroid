@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import codysehl.net.RecyclerViewListAdapter.RecyclerViewListAdapter
 import net.codysehl.www.reader.Search.SearchPresenter
 
 class SearchView(context: Context): LinearLayout(context) {
@@ -15,7 +16,7 @@ class SearchView(context: Context): LinearLayout(context) {
     var searchBar: EditText
     var searchSubmitButton: Button
     var progressIndicator: ProgressBar
-    var bookListAdapter: ItemAdapter<BookListItemView.Props, BookListItemView>
+    var bookListAdapter: RecyclerViewListAdapter<BookListItemView, BookListItemView.Props>
 
     init {
         orientation = LinearLayout.VERTICAL
@@ -31,7 +32,7 @@ class SearchView(context: Context): LinearLayout(context) {
         progressIndicator.visibility = View.GONE
         addView(progressIndicator)
 
-        bookListAdapter = ItemAdapter.create({ view, props: BookListItemView.Props -> view.update(props) }, { BookListItemView(context) })
+        bookListAdapter = RecyclerViewListAdapter.create({ BookListItemView(context) }, { view, props: BookListItemView.Props -> view.update(props) })
         val recyclerView = RecyclerView(context)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = bookListAdapter

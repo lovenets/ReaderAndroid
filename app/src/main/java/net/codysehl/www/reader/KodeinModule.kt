@@ -19,7 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-fun KodeinModule(context: Context?): Kodein.Module {
+fun KodeinModule(): Kodein.Module {
     return Kodein.Module {
         val store = Store(Reducer::reduce, ApplicationState())
         bind<Store<ApplicationState>>() with singleton { store }
@@ -32,13 +32,6 @@ fun KodeinModule(context: Context?): Kodein.Module {
         bind<SearchPresenter>() with factory { kodein: ConfigurableKodein -> SearchPresenter(kodein) }
 
         bind<BookSearchRepository>() with factory { kodein: ConfigurableKodein -> SomeKindOfBookSearchRepository(kodein) }
-
-        if(context != null) {
-            bind<SecretsService>() with singleton { SecretsService(context) }
-        } else {
-            Log.w("DependencyInjection", "Binding a dummy SecretsService because an Android context wasn't given. Did you mean to do that?")
-            bind<SecretsService>() with singleton { SecretsService(null) }
-        }
 
         bind<Logger>() with singleton { Logger() }
 

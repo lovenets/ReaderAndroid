@@ -58,4 +58,7 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0' // Retrofit adapter for rxjava
     compile 'com.google.code.gson:gson:2.8.2' // Json serializer/deserializer
 
+//    compile 'net.codysehl:recyclerview-list-adapter:1.0.0' // My library!
+    compile 'com.github.lalunamel:RecyclerViewListAdapter:34c7ba743887d69a7a7692c54d5b1741c4b18933'
+
 }

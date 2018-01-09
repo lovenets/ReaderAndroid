@@ -6,4 +6,3 @@
 /build
 /captures
 .externalNativeBuild
-app/src/main/res/raw/secrets.properties

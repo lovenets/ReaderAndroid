@@ -39,7 +39,7 @@ class SearchIntegrationTest {
         }
 
         val kodein = ConfigurableKodein()
-        kodein.addImport(KodeinModule(null), allowOverride = true)
+        kodein.addImport(KodeinModule(), allowOverride = true)
         kodein.addImport(SchedulerModule(overrides = true), allowOverride = true)
         kodein.addConfig {
             bind<GoogleBooksService>(overrides = true) with singleton { bookSearchService }
