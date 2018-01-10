@@ -18,5 +18,7 @@ data class GoogleBooksVolume(
 )
 
 data class GoogleBooksVolumeInfo(
-        val title: String
+        val title: String = "",
+        val subtitle: String = "",
+        val authors: List<String> = listOf()
 )

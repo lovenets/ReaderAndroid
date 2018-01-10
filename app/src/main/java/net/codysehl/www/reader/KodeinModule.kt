@@ -15,6 +15,8 @@ import net.codysehl.www.reader.Repository.BookSearchRepository
 import net.codysehl.www.reader.Repository.GoogleBooksService
 import net.codysehl.www.reader.Repository.SomeKindOfBookSearchRepository
 import net.codysehl.www.reader.Search.SearchPresenter
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -35,10 +37,15 @@ fun KodeinModule(): Kodein.Module {
 
         bind<Logger>() with singleton { Logger() }
 
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BODY
+        val httpClientBuilder = OkHttpClient.Builder()
+        httpClientBuilder.interceptors().add(logging)
         val retrofit: Retrofit = Retrofit.Builder()
                 .baseUrl("https://www.googleapis.com/books/v1/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClientBuilder.build())
                 .build()
         bind<GoogleBooksService>() with singleton { retrofit.create(GoogleBooksService::class.java) }
 

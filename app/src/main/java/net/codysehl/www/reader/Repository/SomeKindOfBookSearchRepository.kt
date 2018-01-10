@@ -13,7 +13,6 @@ import java.util.*
 import kotlin.concurrent.schedule
 
 class SomeKindOfBookSearchRepository(override val kodein: ConfigurableKodein) : BookSearchRepository, KodeinAware {
-//    val amazonBookSearchService: AmazonBookSearchService = with(kodein).instance()
     val googleBookSearchService: GoogleBooksService = instance()
 
     override fun search(term: String): Observable<List<Book>> {
@@ -22,22 +21,9 @@ class SomeKindOfBookSearchRepository(override val kodein: ConfigurableKodein) : 
         return googleBookSearchService.search(term)
                 .map { response: GoogleBooksResponse ->
                     response.items.map {
-                        Book(it.volumeInfo.title, "Authorrrr")
+                        Book(it.volumeInfo.title, it.volumeInfo.authors.firstOrNull() ?: "")
                     }
                 }
                 .subscribeOn(Schedulers.io())
-
-//        return amazonBookSearchService.search(term)
-//                .map { response: AmazonBookSearchService.AmazonItemSearchResponse ->
-//                    response.Items.Items.map {
-//                        Book(it.ItemAttributes.Title, it.ItemAttributes.Author)
-//                    }
-//                }
-//                .map { // TODO Remove this when the AmazonSearchService stops putting an empty element at the beginning of the list
-//                    // Not sure why it does that.
-//                    // Will eventually move the getting-amazon-results code to a server anyways.
-//                    // Screw you XML
-//                    it.filter { it != Book("", "") }
-//                }
     }
 }
