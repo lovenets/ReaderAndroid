@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+//apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion 27
@@ -28,7 +27,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
@@ -44,12 +42,6 @@ dependencies {
     testCompile "com.nhaarman:mockito-kotlin:1.5.0" // mocking library
 
     compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0' // Rx extensions for android view components
-
-    compile 'de.codecrafters.apaarb:apaarb:0.9.1' // Amazon Product Search URL Builder
-    compile 'org.simpleframework:simple-xml:2.7.1' // XML Serialization
-
-    compile 'com.github.kittinunf.fuel:fuel:1.12.0' // HTTP Library
-    compile 'com.github.kittinunf.fuel:fuel-rxjava:1.12.0' // Rx bindings for http library
 
     compile 'com.android.support:recyclerview-v7:27.0.2' // Recycler view
 
