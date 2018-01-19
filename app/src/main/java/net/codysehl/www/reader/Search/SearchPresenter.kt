@@ -1,29 +1,25 @@
 package net.codysehl.www.reader.Search
 
-import com.github.salomonbrys.kodein.KodeinAware
-import com.github.salomonbrys.kodein.conf.ConfigurableKodein
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.with
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
-import net.codysehl.www.reader.ReduxLike.ApplicationState
 import net.codysehl.www.reader.ReduxLike.ActionCreator
-import net.codysehl.www.reader.KodeinTag
-import net.codysehl.www.reader.Model.Book
-import net.codysehl.www.reader.Search.SearchPresenter.Props.Book.Companion.fromModel
+import net.codysehl.www.reader.ReduxLike.ApplicationState
+import net.codysehl.www.reader.ReduxLike.Store
+import net.codysehl.www.reader.SchedulerFactory
 
-class SearchPresenter(override val kodein: ConfigurableKodein) : KodeinAware {
+class SearchPresenter(
+        private val applicationState: Observable<ApplicationState>,
+        private val actionCreator: ActionCreator,
+        private val scheduler: Scheduler
+) {
 
-    private val applicationState: Observable<ApplicationState> = instance()
-    private val actionCreator: ActionCreator = with(kodein).instance()
-    private val mainThreadScheduler: Scheduler = instance(KodeinTag.MAIN_THREAD)
     private var disposables: List<Disposable> = listOf()
 
     fun onViewReady(view: View) {
         disposables = listOf(
                 applicationState
-                        .observeOn(mainThreadScheduler)
+                        .observeOn(scheduler)
                         .map { Props.fromState(it) }
                         .doOnNext { view.render(it) }
                         .subscribe(),
@@ -80,6 +76,16 @@ class SearchPresenter(override val kodein: ConfigurableKodein) : KodeinAware {
                         books = state.books.map { Book.fromModel(it) }
                 )
             }
+        }
+    }
+
+    companion object {
+        fun create(): SearchPresenter {
+            return SearchPresenter(
+                    Store.singleton.observable,
+                    ActionCreator.create(),
+                    SchedulerFactory.createMainThreadScheduler()
+            )
         }
     }
 }

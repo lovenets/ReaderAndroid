@@ -1,17 +1,9 @@
 package net.codysehl.www.reader.ReduxLike
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.conf.ConfigurableKodein
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.factory
-import com.github.salomonbrys.kodein.singleton
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
 import net.codysehl.www.reader.Model.Book
-import net.codysehl.www.reader.Promise.Deferred
 import net.codysehl.www.reader.Repository.BookSearchRepository
 import org.junit.Before
 import org.junit.Test
@@ -36,13 +28,7 @@ class ActionCreatorTest {
             on { search(any()) } doReturn bookSearchObservable
         }
 
-        val kodein = ConfigurableKodein()
-        kodein.addConfig {
-            bind<Store<ApplicationState>>() with singleton { store }
-            bind<BookSearchRepository>() with factory<ConfigurableKodein, BookSearchRepository> { _ -> bookSearchRepo }
-        }
-
-        subject = ActionCreator(kodein)
+        subject = ActionCreator(store, bookSearchRepo)
     }
 
     @Test

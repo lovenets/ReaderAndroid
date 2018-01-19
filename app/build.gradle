@@ -32,10 +32,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    compile 'com.github.salomonbrys.kodein:kodein:4.1.0' // Dependency injection framework
-    compile 'com.github.salomonbrys.kodein:kodein-android:4.1.0'
-    compile 'com.github.salomonbrys.kodein:kodein-conf:4.1.0'
-
     compile 'io.reactivex.rxjava2:rxkotlin:2.2.0' // Rx for kotlin
     compile 'io.reactivex:rxandroid:0.23.0' // Rx for Android
 

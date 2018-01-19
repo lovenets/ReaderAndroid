@@ -1,22 +1,14 @@
 package net.codysehl.www.reader.ReduxLike
 
 import android.util.Log
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.KodeinAware
-import com.github.salomonbrys.kodein.conf.ConfigurableKodein
-import com.github.salomonbrys.kodein.conf.KodeinGlobalAware
-import com.github.salomonbrys.kodein.conf.global
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.with
 import io.reactivex.rxkotlin.subscribeBy
-import net.codysehl.www.reader.Model.Book
 import net.codysehl.www.reader.Repository.BookSearchRepository
-import java.util.logging.Logger
+import net.codysehl.www.reader.Repository.SomeKindOfBookSearchRepository
 
-class ActionCreator(override val kodein: ConfigurableKodein) : KodeinAware {
-    private val store: Store<ApplicationState> = instance()
-    private val bookSearchRepo: BookSearchRepository = with(kodein).instance()
-
+class ActionCreator(
+        private val store: Store<ApplicationState>,
+        private val bookSearchRepo: BookSearchRepository
+) {
     fun searchTermChanged(text: String) = store.dispatch(Action.SearchTermChanged(text))
     fun searchSubmitted() {
         val term = store.state.searchText
@@ -29,5 +21,12 @@ class ActionCreator(override val kodein: ConfigurableKodein) : KodeinAware {
                 }, {  }, { books ->
                     store.dispatch(Action.SearchCompletedWithSuccess(books))
                 })
+    }
+
+    companion object {
+        fun create(): ActionCreator = ActionCreator(
+                Store.singleton,
+                SomeKindOfBookSearchRepository.create()
+        )
     }
 }
