@@ -4,7 +4,7 @@ import android.util.Log
 
 object Reducer {
     fun reduce(state: ApplicationState, action: Action): ApplicationState {
-        Log.d("#Lifecycle#", "Reducing: $action")
+        Log.i("Lifecycle", "Reducing: $action")
         return when (action) {
             is Action.SearchTermChanged -> reduceSearchTermChangedAction(state, action)
             is Action.SearchSubmitted -> reduceSearchSubmittedAction(state, action)

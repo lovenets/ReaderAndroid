@@ -35,6 +35,6 @@ class SearchActivity : Activity(), SearchPresenter.View {
 
     override fun render(props: SearchPresenter.Props) {
         view.update(props)
-        Log.d("Lifcycle", "Rendering $props")
+        Log.i("Lifcycle", "Rendering $props")
     }
 }

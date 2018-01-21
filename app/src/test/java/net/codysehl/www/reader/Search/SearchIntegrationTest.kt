@@ -6,7 +6,6 @@ import com.nhaarman.mockito_kotlin.verify
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import net.codysehl.www.reader.ReduxLike.ActionCreator
-import net.codysehl.www.reader.ReduxLike.ApplicationState
 import net.codysehl.www.reader.ReduxLike.Store
 import net.codysehl.www.reader.Repository.GoogleBooksResponse
 import org.junit.Before

@@ -1,6 +1,5 @@
 package net.codysehl.www.reader.ReduxLike
 
-import android.util.Log
 import io.reactivex.rxkotlin.subscribeBy
 import net.codysehl.www.reader.Repository.BookSearchRepository
 import net.codysehl.www.reader.Repository.GoogleBookSearchRepository
@@ -16,7 +15,6 @@ class ActionCreator(
 
         bookSearchRepo.search(term)
                 .subscribeBy({ error ->
-                    Log.e("Lifecycle", error.toString())
                     store.dispatch(Action.SearchCompletedWithFailure(error.message ?: "Failed to fetch search results for $term"))
                 }, {  }, { books ->
                     store.dispatch(Action.SearchCompletedWithSuccess(books))
