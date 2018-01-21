@@ -3,7 +3,7 @@ package net.codysehl.www.reader.ReduxLike
 import android.util.Log
 import io.reactivex.rxkotlin.subscribeBy
 import net.codysehl.www.reader.Repository.BookSearchRepository
-import net.codysehl.www.reader.Repository.SomeKindOfBookSearchRepository
+import net.codysehl.www.reader.Repository.GoogleBookSearchRepository
 
 class ActionCreator(
         private val store: Store<ApplicationState>,
@@ -26,7 +26,7 @@ class ActionCreator(
     companion object {
         fun create(): ActionCreator = ActionCreator(
                 Store.singleton,
-                SomeKindOfBookSearchRepository.create()
+                GoogleBookSearchRepository.create()
         )
     }
 }

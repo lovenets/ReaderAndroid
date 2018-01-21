@@ -4,6 +4,8 @@ import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+
+// https://www.googleapis.com/books/v1/volumes?q={search terms}
 interface GoogleBooksService {
     @GET("volumes")
     fun search(@Query("q") term: String): Observable<GoogleBooksResponse>
